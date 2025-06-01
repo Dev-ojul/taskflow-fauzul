@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Manajemen Tugas Modern</title>
+    <link rel="icon" href="list.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-text">
+                <h1>TaskFlow</h1>
+                <p>By Muhammad Fauzul</p>
+            </div>
+        </div>
+        <div class="user-controls">
+            <button class="btn btn-outline">
+                <i class="fas fa-sync-alt"></i> Sinkronisasi
+            </button>
+            <button class="btn btn-primary" id="openAddTaskModalBtn">
+                <i class="fas fa-plus"></i> Tambah Tugas
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard">
+            <aside class="sidebar">
+                <h2><i class="fas fa-filter"></i> Filter</h2>
+                <div class="filters">
+                    <div class="filter-item active" data-filter="all">
+                        <i class="fas fa-list"></i> Semua Tugas
+                        <span class="badge" id="allTasksCount">0</span>
+                    </div>
+                    <div class="filter-item" data-filter="today">
+                        <i class="fas fa-calendar-day"></i> Hari Ini
+                        <span class="badge" id="todayTasksBadge">0</span>
+                    </div>
+                    <div class="filter-item" data-filter="thisWeek">
+                        <i class="fas fa-calendar-week"></i> Minggu Ini
+                        <span class="badge" id="thisWeekTasksBadge">0</span>
+                    </div>
+                    <div class="filter-item" data-filter="highPriority">
+                        <i class="fas fa-star"></i> Prioritas
+                        <span class="badge" id="highPriorityFilterBadge">0</span>
+                    </div>
+                </div>
+
+                <div class="categories">
+                    <h2><i class="fas fa-tag"></i> Kategori</h2>
+                    <div class="category-list">
+                        <div class="category">
+                            <span class="category-color" style="background: #1e88e5;"></span>
+                            Pekerjaan
+                        </div>
+                        <div class="category">
+                            <span class="category-color" style="background: #4caf50;"></span>
+                            Tugas Kuliah </div>
+                        <div class="category">
+                            <span class="category-color" style="background: #ff9800;"></span>
+                            Belanja
+                        </div>
+                        <div class="category">
+                            <span class="category-color" style="background: #9c27b0;"></span>
+                            Kesehatan
+                        </div>
+                        <div class="category">
+                            <span class="category-color" style="background: #f44336;"></span>
+                            Penting
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statTotalTasks">0</h3>
+                            <p>Total Tugas</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-orange">
+                            <i class="fas fa-spinner"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statInProgressTasks">0</h3>
+                            <p>Lagi Dikerjain</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statCompletedTasks">0</h3>
+                            <p>Udah Kelar</p>
+                        </div>
+                    </div>
+                     <div class="stat-card">
+                        <div class="stat-icon icon-red">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statHighPriorityTasks">0</h3>
+                            <p>Prioritas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="task-section">
+                    <div class="task-header">
+                        <h2><i class="fas fa-list-check"></i> Daftar Tugas</h2>
+                        <div class="task-actions">
+                            <div class="btn-icon" title="Sortir">
+                                <i class="fas fa-sort"></i>
+                            </div>
+                            <div class="btn-icon" title="Tampilan">
+                                <i class="fas fa-grip"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="task-grid" id="taskGrid">
+                        </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fas fa-plus-circle"></i> Tambah Tugas Baru</h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskTitle">Judul Tugas</label>
+                        <input type="text" id="taskTitle" class="form-control" placeholder="Apa yang perlu dilakukan?" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskDescription">Deskripsi</label>
+                        <textarea id="taskDescription" class="form-control" rows="3" placeholder="Tambahkan detail tugas..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskDate">Tanggal Jatuh Tempo</label>
+                            <input type="date" id="taskDate" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="taskPriority">Prioritas</label>
+                            <select id="taskPriority" class="form-control" required>
+                                <option value="high">Prioritas</option>
+                                <option value="medium" selected>Sedang</option>
+                                <option value="low">Rendah</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskCategory">Kategori</label>
+                            <select id="taskCategory" class="form-control" required>
+                                <option value="Pekerjaan">Pekerjaan</option>
+                                <option value="Tugas Kuliah">Tugas Kuliah</option> <option value="Belanja">Belanja</option>
+                                <option value="Kesehatan">Kesehatan</option>
+                                <option value="Penting">Penting</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="taskStatus">Status</label>
+                            <select id="taskStatus" class="form-control" required>
+                                <option value="todo">Belum Dimulai</option>
+                                <option value="inprogress">Lagi Dikerjain</option>
+                                <option value="completed">Udah Kelar</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-cancel close-modal-btn">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="saveTaskBtn">Simpan Tugas</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
